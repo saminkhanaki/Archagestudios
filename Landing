@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ArcHage Studios - Premium Domain For Sale</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #0f0c29; background: linear-gradient(to right, #24243e, #302b63, #0f0c29); margin: 0; color: white; }
+        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; max-width: 500px; }
+        h1 { color: #a29bfe; font-size: 2.5rem; }
+        p { color: #dfe6e9; line-height: 1.8; }
+        .btn { display: inline-block; margin-top: 2rem; padding: 12px 30px; background: #6c5ce7; color: white; text-decoration: none; border-radius: 50px; font-weight: bold; }
+        .btn:hover { background: #a29bfe; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>ArcHageStudios.com</h1>
+        <p>Premium gaming domain with <strong>333 referring domains</strong>. Perfect for game publishers and studios.</p>
+        <a href="mailto:info@archagestudios.com" class="btn">Inquire Now</a>
+    </div>
+</body>
+</html>
