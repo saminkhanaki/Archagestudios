@@ -3,27 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archage Studios | Fantasy MMO Test</title>
+    <title>Archage Studios | Premium Gaming Asset</title>
     <style>
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            background-color: #0a0502; /* قهوه‌ای خیلی تیره که به تم چوب و سنگ فانتزی بخورد */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; font-family: 'Georgia', serif; background-color: #0a0502; overflow: hidden; }
+
+        /* تصویر پس‌زمینه فانتزی تایید شده */
+        .bg-img {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop');
+            background-size: cover; background-position: center; z-index: 0;
         }
 
-        .test-bg {
-            width: 100%;
-            height: 100%;
-            /* استفاده از یک تصویر فانتزی باکیفیت برای تست */
-            background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+        /* لایه رویی با تم سوخته و قدیمی */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(20, 10, 5, 0.6), rgba(10, 5, 2, 0.8));
+            z-index: 1;
+        }
+
+        .content {
+            position: relative; height: 100vh; display: flex; 
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; z-index: 2; color: #f2e6d9; padding: 20px;
+        }
+
+        .legacy-tag { 
+            color: #d4af37; text-transform: uppercase; letter-spacing: 5px;
+            font-size: 0.8em; margin-bottom: 10px; font-weight: bold;
+        }
+
+        h1 { 
+            font-size: 3.5em; color: #fff; margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .sub-title { 
+            font-size: 1.2em; color: #d4af37; font-style: italic;
+            margin-bottom: 25px; letter-spacing: 1px;
+        }
+
+        p { 
+            font-size: 1.1em; color: #bdc3c7; max-width: 650px;
+            line-height: 1.8; border-top: 1px solid rgba(212, 175, 55, 0.3);
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="test-bg"></div>
+    <div class="bg-img"></div>
+    <div class="overlay"></div>
+    
+    <div class="content">
+        <div class="legacy-tag">Former Home of Titan Reach</div>
+        <h1>Archage Studios</h1>
+        <div class="sub-title">Epic Worlds. Boundless Stories.</div>
+        <p>A prestigious domain with a rich history in MMORPG development. 
+           Secure this legacy asset for your next gaming empire.</p>
+    </div>
 </body>
 </html>
