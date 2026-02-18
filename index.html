@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archage Studios | Premium Gaming Asset</title>
+    <title>Archage Studios | Legendary Gaming Domain</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { height: 100%; font-family: 'Georgia', serif; background-color: #0a0502; overflow: hidden; }
 
-        /* تصویر پس‌زمینه فانتزی تایید شده */
         .bg-img {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop');
             background-size: cover; background-position: center; z-index: 0;
         }
 
-        /* لایه رویی با تم سوخته و قدیمی */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(20, 10, 5, 0.6), rgba(10, 5, 2, 0.8));
+            background: linear-gradient(rgba(20, 10, 5, 0.5), rgba(10, 5, 2, 0.85));
             z-index: 1;
         }
 
@@ -28,27 +26,33 @@
             text-align: center; z-index: 2; color: #f2e6d9; padding: 20px;
         }
 
-        .legacy-tag { 
-            color: #d4af37; text-transform: uppercase; letter-spacing: 5px;
-            font-size: 0.8em; margin-bottom: 10px; font-weight: bold;
+        .legacy-tag { color: #d4af37; text-transform: uppercase; letter-spacing: 5px; font-size: 0.8em; margin-bottom: 10px; font-weight: bold; }
+        h1 { font-size: clamp(2.5em, 8vw, 4em); color: #fff; margin-bottom: 5px; text-shadow: 0 0 30px rgba(212, 175, 55, 0.4); }
+        .sub-title { font-size: 1.2em; color: #d4af37; font-style: italic; margin-bottom: 30px; }
+
+        /* باکس دکمه‌ها */
+        .btn-container { width: 100%; max-width: 400px; margin-top: 20px; }
+
+        .btn { 
+            display: block; padding: 18px; margin: 12px 0; border-radius: 4px;
+            text-decoration: none; font-weight: bold; font-size: 1em;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px;
+            border: 1px solid #d4af37;
         }
 
-        h1 { 
-            font-size: 3.5em; color: #fff; margin-bottom: 5px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-            letter-spacing: 2px;
+        /* دکمه طلایی حماسی */
+        .btn-afternic { 
+            background: rgba(212, 175, 55, 0.15); color: #d4af37;
         }
+        .btn-afternic:hover { background: #d4af37; color: #0a0502; transform: scale(1.03); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
-        .sub-title { 
-            font-size: 1.2em; color: #d4af37; font-style: italic;
-            margin-bottom: 25px; letter-spacing: 1px;
+        /* دکمه سنگی/نقره‌ای */
+        .btn-sedo { 
+            background: rgba(255, 255, 255, 0.05); color: #fff; border-color: rgba(255, 255, 255, 0.3);
         }
+        .btn-sedo:hover { background: rgba(255, 255, 255, 0.9); color: #000; transform: scale(1.03); }
 
-        p { 
-            font-size: 1.1em; color: #bdc3c7; max-width: 650px;
-            line-height: 1.8; border-top: 1px solid rgba(212, 175, 55, 0.3);
-            padding-top: 20px;
-        }
+        .desc { font-size: 1em; color: #bdc3c7; max-width: 600px; line-height: 1.6; border-top: 1px solid rgba(212, 175, 55, 0.2); padding-top: 25px; margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -59,8 +63,13 @@
         <div class="legacy-tag">Former Home of Titan Reach</div>
         <h1>Archage Studios</h1>
         <div class="sub-title">Epic Worlds. Boundless Stories.</div>
-        <p>A prestigious domain with a rich history in MMORPG development. 
-           Secure this legacy asset for your next gaming empire.</p>
+
+        <div class="btn-container">
+            <a href="https://www.afternic.com/domain/archagestudios.com" class="btn btn-afternic">Claim This Legacy via Afternic</a>
+            <a href="https://sedo.com/search/details/?domain=archagestudios.com" class="btn btn-sedo">Purchase via Sedo</a>
+        </div>
+
+        <p class="desc">A prestigious asset with a deep-rooted history in MMORPG development. Perfect for the next generation of gaming pioneers.</p>
     </div>
 </body>
 </html>
