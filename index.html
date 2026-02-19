@@ -6,7 +6,8 @@
     <title>ArchageStudios.com | Premium Gaming Domain</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { height: 100%; font-family: 'Georgia', serif; background-color: #0a0502; overflow: hidden; }
+        /* تغییر: overflow-y اجازه اسکرول می‌دهد */
+        body, html { min-height: 100%; font-family: 'Georgia', serif; background-color: #0a0502; overflow-x: hidden; overflow-y: auto; }
 
         .bg-img {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -20,42 +21,52 @@
             z-index: 1;
         }
 
-        .content {
+        .hero-section {
             position: relative; height: 100vh; display: flex; 
             flex-direction: column; align-items: center; justify-content: center;
             text-align: center; z-index: 2; color: #f2e6d9; padding: 20px;
         }
 
         .legacy-tag { color: #d4af37; text-transform: uppercase; letter-spacing: 5px; font-size: 0.8em; margin-bottom: 10px; font-weight: bold; }
-        
-        /* اصلاح تیتر به دامین */
         h1 { font-size: clamp(2em, 7vw, 3.5em); color: #fff; margin-bottom: 5px; text-shadow: 0 0 30px rgba(212, 175, 55, 0.4); }
-        
         .sub-title { font-size: 1.1em; color: #d4af37; font-style: italic; margin-bottom: 30px; }
-
         .btn-container { width: 100%; max-width: 420px; margin-top: 10px; }
-
         .btn { 
             display: block; padding: 18px; margin: 12px 0; border-radius: 4px;
             text-decoration: none; font-weight: bold; font-size: 0.95em;
             transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px;
-            border: 1px solid #d4af37;
+            border: 1px solid #d4af37; text-align: center;
         }
-
-        /* دکمه‌های یکسان با استایل Gaming Menu */
-        .btn-gold { 
-            background: rgba(212, 175, 55, 0.15); color: #d4af37;
-        }
+        .btn-gold { background: rgba(212, 175, 55, 0.15); color: #d4af37; }
         .btn-gold:hover { background: #d4af37; color: #0a0502; transform: translateY(-2px); }
-
         .desc { font-size: 0.95em; color: #bdc3c7; max-width: 600px; line-height: 1.6; border-top: 1px solid rgba(212, 175, 55, 0.2); padding-top: 25px; margin-top: 25px; }
+
+        /* استایل جدید برای بخش مقاله */
+        .article-section {
+            position: relative; z-index: 2;
+            background: rgba(10, 5, 2, 0.95);
+            color: #f2e6d9;
+            padding: 80px 20px;
+            border-top: 1px solid #d4af37;
+        }
+        .article-content { max-width: 850px; margin: 0 auto; line-height: 1.8; font-family: 'Inter', sans-serif; }
+        .article-content h2 { color: #d4af37; font-family: 'Georgia', serif; font-size: 2em; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .article-content p { margin-bottom: 20px; color: #ccc; font-size: 1.1em; }
+        .tech-box { 
+            margin-top: 40px; border: 1px solid rgba(212, 175, 55, 0.3); 
+            padding: 30px; background: rgba(212, 175, 55, 0.05); border-radius: 4px;
+        }
+        .tech-box h3 { color: #d4af37; margin-bottom: 20px; font-size: 1.3em; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 10px; }
+        .tech-box ul { list-style: none; }
+        .tech-box li { margin-bottom: 12px; font-size: 1em; display: flex; align-items: baseline; }
+        .tech-box li strong { color: #fff; margin-right: 10px; min-width: 180px; }
     </style>
 </head>
 <body>
     <div class="bg-img"></div>
     <div class="overlay"></div>
     
-    <div class="content">
+    <div class="hero-section">
         <div class="legacy-tag">Former Home of Titan Reach</div>
         <h1>ArchageStudios.com</h1>
         <div class="sub-title">Legendary Gaming Domain For Sale</div>
@@ -67,5 +78,24 @@
 
         <p class="desc">A prestigious digital asset with a deep-rooted history in MMORPG development. Perfect for the next generation of gaming pioneers and studio ventures.</p>
     </div>
+
+    <section class="article-section">
+        <div class="article-content">
+            <h2>From Game Development to Creative Excellence</h2>
+            <p><strong>Archage Studios</strong> carries a rich legacy as a former powerhouse in the indie game development and computer graphics industry. Founded on the principles of immersive storytelling and interactive design, this domain has been at the heart of creative coding and digital world-building. We have transitioned from the technical complexities of game engines to a broader horizon of digital arts, maintaining the same high standards of performance and visual fidelity.</p>
+            
+            <p>Today, Archage Studios stands as a bridge between the world of interactive entertainment and modern digital studio services. Our heritage in game design gives us a unique edge in understanding user engagement, spatial mechanics, and cutting-edge rendering techniques. Whether we are exploring new frontiers in digital assets or architectural visualization, the "Gamer DNA" of precision and creativity remains embedded in everything we do.</p>
+
+            <div class="tech-box">
+                <h3>Technical Domain Insights (Verified by Moz)</h3>
+                <ul>
+                    <li><strong>Domain Authority (DA):</strong> <span>13 (Strong industry standing)</span></li>
+                    <li><strong>Inbound Links:</strong> <span>9,300+ (High-quality legacy backlink profile)</span></li>
+                    <li><strong>Linking Root Domains:</strong> <span>333 unique referring sources</span></li>
+                    <li><strong>Niche History:</strong> <span>Game Development, MMORPG, and Software Engineering</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
