@@ -7,25 +7,42 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { min-height: 100%; font-family: 'Georgia', serif; background-color: #0a0502; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
-
         .bg-img {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop');
             background-size: cover; background-position: center; z-index: 0;
         }
-
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(20, 10, 5, 0.5), rgba(10, 5, 2, 0.9));
             z-index: 1;
         }
 
+        /* Nav */
+        .top-nav {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 5;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 22px 30px; background: rgba(10, 5, 2, 0.55);
+            backdrop-filter: blur(6px); border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .top-nav .brand { color: #f2e6d9; font-size: 1.15em; letter-spacing: 1px; }
+        .top-nav .brand span { color: #d4af37; }
+        .top-nav .nav-links { display: flex; gap: 22px; align-items: center; font-family: 'Inter', sans-serif; }
+        .top-nav .nav-links a {
+            text-decoration: none; color: #d4af37; font-size: 0.85em;
+            text-transform: uppercase; letter-spacing: 1.5px; transition: color 0.25s ease;
+        }
+        .top-nav .nav-links a:hover { color: #fff; }
+        .top-nav .nav-links a.pill {
+            border: 1px solid #d4af37; padding: 8px 16px; border-radius: 4px;
+        }
+        .top-nav .nav-links a.pill:hover { background: #d4af37; color: #0a0502; }
+
         .hero-section {
             position: relative; min-height: 100vh; display: flex; 
             flex-direction: column; align-items: center; justify-content: center;
             text-align: center; z-index: 2; color: #f2e6d9; padding: 40px 20px;
         }
-
         .legacy-tag { color: #d4af37; text-transform: uppercase; letter-spacing: 5px; font-size: 0.85em; margin-bottom: 15px; font-weight: bold; }
         h1 { font-size: clamp(2.2em, 8vw, 3.8em); color: #fff; margin-bottom: 10px; text-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
         .sub-title { font-size: 1.2em; color: #d4af37; font-style: italic; margin-bottom: 35px; }
@@ -39,16 +56,13 @@
         }
         .btn-gold { background: rgba(212, 175, 55, 0.15); color: #d4af37; }
         .btn-gold:hover { background: #d4af37; color: #0a0502; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
-
         .desc { font-size: 1em; color: #bdc3c7; max-width: 650px; line-height: 1.7; border-top: 1px solid rgba(212, 175, 55, 0.3); padding-top: 30px; margin-top: 30px; }
-
         /* Article & Tech Section */
         .article-section { position: relative; z-index: 2; background: #0a0502; color: #f2e6d9; padding: 100px 20px; border-top: 2px solid #d4af37; }
         .article-content { max-width: 900px; margin: 0 auto; line-height: 2; font-family: 'Inter', sans-serif; }
         .article-content h2 { color: #d4af37; font-family: 'Georgia', serif; font-size: 2.4em; margin-bottom: 35px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; padding-bottom: 15px; }
         .article-content p { margin-bottom: 25px; color: #ccc; font-size: 1.15em; text-align: justify; }
         .kw { color: #d4af37; font-weight: 700; }
-
         .tech-grid { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 25px; margin: 50px 0; background: rgba(212, 175, 55, 0.03); padding: 40px; 
@@ -58,25 +72,34 @@
         .tech-label { display: block; font-size: 0.8em; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600; }
         .tech-value { display: block; font-size: 1.4em; color: #fff; font-weight: bold; }
         .tech-value span { color: #d4af37; font-size: 0.75em; }
+
+        @media (max-width: 560px) {
+            .top-nav { padding: 16px 18px; }
+            .top-nav .nav-links { gap: 10px; }
+        }
     </style>
 </head>
 <body>
     <div class="bg-img"></div>
     <div class="overlay"></div>
-    
+
+    <nav class="top-nav">
+        <div class="brand">Archage<span>Studios</span></div>
+        <div class="nav-links">
+            <a href="free-games.html" class="pill">Free Games</a>
+        </div>
+    </nav>
+
     <div class="hero-section">
         <div class="legacy-tag">Former Home of Titan Reach</div>
         <h1>ArchageStudios<span style="color:#d4af37">.com</span></h1>
         <div class="sub-title">Premium Legacy Gaming Domain For Sale</div>
-
         <div class="btn-container">
             <a href="https://www.afternic.com/domain/archagestudios.com" class="btn btn-gold">PURCHASE VIA AFTERNIC</a>
             <a href="https://sedo.com/search/details/?domain=archagestudios.com" class="btn btn-gold">PURCHASE VIA SEDO</a>
         </div>
-
         <p class="desc">A high-authority digital asset with 9,300+ legacy backlinks. Perfect for game development studios, creative agencies, or immersive MMORPG ventures.</p>
     </div>
-
     <section class="article-section">
         <div class="article-content">
             <h2>The Legacy of <span style="color:#fff">Archage Studios</span></h2>
@@ -84,7 +107,6 @@
             <p><strong>ArchageStudios.com</strong> carries a profound legacy as a former epicenter for indie game development and high-end computer graphics. Having served as the digital home for ambitious projects like <span class="kw">Titan Reach</span>, this domain is intrinsically linked to the world of MMORPGs, creative coding, and digital world-building. In the gaming industry, a domain with this much historical "weight" is a rare find, offering instant credibility to any new studio or technology venture.</p>
             
             <p>What sets this asset apart is its massive <span class="kw">SEO Footprint</span>. With over <strong>9,300 inbound links</strong> and a <strong>Domain Authority (DA) of 13</strong>, ArchageStudios.com has already done the hard work of building trust with major search engines. These links originate from gaming communities, development forums, and tech news outlets, providing an organic traffic foundation that would take years and thousands of dollars to build from scratch.</p>
-
             <div class="tech-grid">
                 <div class="tech-item">
                     <span class="tech-label">Domain Authority</span>
@@ -103,7 +125,6 @@
                     <span class="tech-value">High <span>(Gaming)</span></span>
                 </div>
             </div>
-
             <p>The name "Archage Studios" resonates with a sense of architectural precision and epic storytelling. It is the perfect fit for a <span class="kw">Game Dev Studio</span>, a VR/AR creative agency, or a software house specializing in <span class="kw">Unreal Engine</span> or Unity development. Its professional yet imaginative sound makes it highly brandable for ventures that want to bridge the gap between technical performance and visual artistry.</p>
             
             <p>In the modern era of 2026, where digital identity is the most valuable currency, owning a domain with a pre-established reputation in the <span class="kw">Interactive Entertainment</span> sector is a significant competitive advantage. ArchageStudios.com is not just a URL—it is a turnkey brand foundation for the next generation of digital pioneers. Secure this legacy today and build your future on a foundation of proven creative excellence.</p>
