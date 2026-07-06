@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="canonical" href="https://archagestudios.com/hero-horse.html">
+<title>Hero Horse 🐴 | ArchageStudios.com</title>
+<meta name="description" content="Hero Horse: a free browser game where you jump over enemies, shoot arrows, throw bombs, and collect armor while running along the path.">
+<meta name="keywords" content="Hero Horse game, free horse game, browser jumping game, free arcade game online">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hero Horse | ArchageStudios.com">
+<meta property="og:description" content="A free browser game — jump over enemies, shoot arrows, throw bombs, and collect armor while running along the path.">
+<meta property="og:image" content="https://archagestudios.com/assets/og-hero-horse.jpg">
+<meta property="og:url" content="https://archagestudios.com/hero-horse.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hero Horse | ArchageStudios.com">
+<meta name="twitter:description" content="A free browser game — jump over enemies, shoot arrows, throw bombs, and collect armor while running along the path.">
+<meta name="twitter:image" content="https://archagestudios.com/assets/og-hero-horse.jpg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: linear-gradient(#87ceeb, #b3e5fc);
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+  }
+  #wrap {
+    position: relative;
+    width: 800px; max-width: 100vw;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #a8e6ff;
+    border: 6px solid #6d4c2c;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  #hud {
+    position: absolute; top: 14px; left: 16px; right: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    color: #fff; font-weight: bold; font-size: 18px;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+  #hud > div { background: rgba(0,0,0,0.28); padding: 4px 10px; border-radius: 10px; }
+  #overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(20,15,10,0.72);
+    color: #fff; text-align: center; border-radius: 10px;
+    gap: 10px; padding: 10px;
+  }
+  #overlay h1 { margin: 0 0 4px; font-size: 32px; }
+  #overlay p { margin: 0; font-size: 15px; max-width: 560px; line-height: 1.8; }
+  .cfgRow { display:flex; align-items:center; gap:10px; margin-top: 6px; flex-wrap: wrap; justify-content:center; }
+  .cfgLabel { min-width: 110px; font-size: 15px; text-align: left; }
+  .cfgBtn {
+    background: rgba(255,255,255,0.15); color:#fff; border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 10px; padding: 7px 14px; font-size: 15px; cursor: pointer; font-weight: bold;
+  }
+  .cfgBtn.active { background: #ffb703; color:#3a2600; border-color:#ffb703; }
+  button.mainBtn {
+    background: #ffb703; color: #333; border: none; border-radius: 12px;
+    padding: 13px 30px; font-size: 20px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 4px 0 #d99d00; margin-top: 8px;
+  }
+  button.mainBtn:active { transform: translateY(3px); box-shadow: none; }
+  #touchControls {
+    position: absolute; bottom: 14px; left: 0; right: 0;
+    display: flex; justify-content: space-between; padding: 0 14px;
+    pointer-events: none;
+  }
+  #touchControls > div { display: flex; gap: 10px; pointer-events: auto; }
+  .tbtn {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(255,255,255,0.75); border: 3px solid #6d4c2c;
+    font-size: 22px; display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-user-select: none;
+  }
+  .tbtn:active { background: rgba(255,255,255,0.4); }
+  #instructions { text-align: center; color: #444; font-size: 13px; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="game" width="800" height="450"></canvas>
+  <div id="hud">
+    <div id="score">Score: 0</div>
+    <div id="arrowsCount">🏹 x0</div>
+    <div id="bombs">💣 x0</div>
+    <div id="hearts">❤️</div>
+  </div>
+  <div id="overlay">
+    <h1>🐴 Hero Horse</h1>
+    <p>
+      The horse runs on the ground. Jump (⬆️ / Up) over the fat enemies.
+      Land on top of one to squash it flat, but touch it any other way and you lose a life!<br>
+      Shoot arrows with <b>Space</b> and throw bombs with <b>Alt</b>.
+      Arrows, bombs and armor float along the path — grab them! Armor also gives you a lance to smash enemies with.
+    </p>
+
+    <div class="cfgRow">
+      <span class="cfgLabel">❤️ Lives:</span>
+      <div class="cfgBtn" data-group="lives" data-val="3">3</div>
+      <div class="cfgBtn" data-group="lives" data-val="5">5</div>
+      <div class="cfgBtn" data-group="lives" data-val="7">7</div>
+    </div>
+    <div class="cfgRow">
+      <span class="cfgLabel">🏹 Arrows:</span>
+      <div class="cfgBtn" data-group="arrows" data-val="5">5</div>
+      <div class="cfgBtn" data-group="arrows" data-val="10">10</div>
+      <div class="cfgBtn" data-group="arrows" data-val="20">20</div>
+    </div>
+    <div class="cfgRow">
+      <span class="cfgLabel">💣 Bombs:</span>
+      <div class="cfgBtn" data-group="bombs" data-val="1">1</div>
+      <div class="cfgBtn" data-group="bombs" data-val="3">3</div>
+      <div class="cfgBtn" data-group="bombs" data-val="5">5</div>
+    </div>
+
+    <button class="mainBtn" id="startBtn">Start Game</button>
+  </div>
+  <div id="touchControls">
+    <div>
+      <div class="tbtn" id="btnJump">⬆️</div>
+    </div>
+    <div>
+      <div class="tbtn" id="btnBomb">💣</div>
+      <div class="tbtn" id="btnShoot">🏹</div>
+    </div>
+  </div>
+</div>
+<p id="instructions">⬆️ / Up = Jump | Space = Shoot Arrow | Alt = Throw Bomb — land on top to squash, touch sideways to get hurt</p>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const groundY = 390;
+
+// ---------- Audio ----------
+let audioCtx;
+function beep(freq, dur, type='square', vol=0.15){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.value = vol;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.stop(audioCtx.currentTime + dur);
+  }catch(e){}
+}
+const sfx = {
+  shoot: () => beep(700, 0.08, 'triangle', 0.1),
+  bomb: () => beep(130, 0.35, 'sawtooth', 0.22),
+  explode: () => beep(70, 0.45, 'sawtooth', 0.28),
+  stomp: () => beep(300, 0.12, 'square', 0.18),
+  lance: () => beep(500, 0.1, 'square', 0.16),
+  hurt: () => beep(120, 0.25, 'square', 0.2),
+  power: () => beep(880, 0.25, 'sine', 0.18),
+  pickup: () => beep(560, 0.1, 'triangle', 0.14),
+  jump: () => beep(440, 0.08, 'sine', 0.1),
+  gameover: () => beep(80, 0.6, 'sawtooth', 0.2),
+};
+
+// ---------- Config (chosen on start screen) ----------
+let cfg = { lives: 3, arrows: 10, bombs: 3 };
+document.querySelectorAll('.cfgBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.dataset.group;
+    document.querySelectorAll(`.cfgBtn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    cfg[group] = parseInt(btn.dataset.val, 10);
+  });
+});
+document.querySelector('.cfgBtn[data-group="lives"][data-val="3"]').classList.add('active');
+document.querySelector('.cfgBtn[data-group="arrows"][data-val="10"]').classList.add('active');
+document.querySelector('.cfgBtn[data-group="bombs"][data-val="3"]').classList.add('active');
+
+// ---------- Game State ----------
+let running = false;
+let score = 0;
+let lives = 3;
+let arrowCount = 0;
+let bombCount = 0;
+let frame = 0;
+let speed = 4.6;
+let bgOffset = 0;
+
+const keys = {};
+const horse = {
+  x: 110, w: 104, h: 72,
+  y: groundY - 72,
+  vy: 0,
+  onGround: true,
+  armored: false, armorTimer: 0, invuln: 0,
+};
+const GRAVITY = 0.72;
+const JUMP_VY = -15.5;
+
+let arrows = [];
+let bombs = [];
+let explosions = [];
+let enemies = [];
+let items = [];
+
+let enemySpawnTimer = 0;
+let itemSpawnTimer = 0;
+
+function rectsOverlap(a, b){
+  return a.x < b.x + b.w && a.x + a.w > b.x &&
+         a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+// ---------- Input ----------
+window.addEventListener('keydown', e => {
+  if(['Space','ArrowUp','ArrowDown','AltLeft','AltRight'].includes(e.code)) e.preventDefault();
+  keys[e.code] = true;
+  if(e.code === 'ArrowUp' || e.code === 'KeyW') doJump();
+  if(e.code === 'Space') shootArrow();
+  if(e.code === 'AltLeft' || e.code === 'AltRight') throwBomb();
+});
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+function bindTap(id, fn){
+  const el = document.getElementById(id);
+  const go = e => { e.preventDefault(); fn(); };
+  el.addEventListener('touchstart', go);
+  el.addEventListener('mousedown', go);
+}
+bindTap('btnJump', doJump);
+bindTap('btnShoot', shootArrow);
+bindTap('btnBomb', throwBomb);
+
+// ---------- Actions ----------
+function doJump(){
+  if(!running) return;
+  if(horse.onGround){
+    horse.vy = JUMP_VY;
+    horse.onGround = false;
+    sfx.jump();
+  }
+}
+let shootCooldown = 0;
+function shootArrow(){
+  if(!running || shootCooldown > 0 || arrowCount <= 0) return;
+  shootCooldown = 16;
+  arrowCount--;
+  arrows.push({ x: horse.x + horse.w - 10, y: horse.y + horse.h*0.4, w: 24, h: 6 });
+  sfx.shoot();
+  updateHUD();
+}
+function throwBomb(){
+  if(!running || bombCount <= 0) return;
+  bombCount--;
+  updateHUD();
+  bombs.push({ x: horse.x + horse.w - 10, y: horse.y + horse.h*0.4, w: 20, h: 20, vx: 7, vy: -7.5, timer: 60 });
+  sfx.bomb();
+}
+
+// ---------- Spawning ----------
+function spawnEnemy(){
+  const h = 66, w = 58;
+  enemies.push({ x: W + 20, y: groundY - h, w, h, speed: speed + Math.random()*0.8, alive: true, squishProgress: 0 });
+}
+function spawnItem(){
+  const r = Math.random();
+  let type = 'arrow';
+  if(r < 0.12) type = 'armor';
+  else if(r < 0.42) type = 'bomb';
+  else type = 'arrow';
+  const size = 28;
+  items.push({ x: W + 20, y: groundY - size - 6, size, type, speed: speed*0.95 });
+}
+
+// ---------- Update ----------
+function update(){
+  frame++;
+  if(shootCooldown > 0) shootCooldown--;
+
+  if(!horse.onGround){
+    horse.vy += GRAVITY;
+    horse.y += horse.vy;
+    if(horse.y >= groundY - horse.h){
+      horse.y = groundY - horse.h;
+      horse.vy = 0;
+      horse.onGround = true;
+    }
+  }
+
+  if(horse.armored){
+    horse.armorTimer--;
+    if(horse.armorTimer <= 0) horse.armored = false;
+  }
+  if(horse.invuln > 0) horse.invuln--;
+
+  bgOffset -= speed * 0.6;
+  if(bgOffset <= -80) bgOffset += 80;
+
+  speed += 0.0016;
+
+  arrows.forEach(a => a.x += 11);
+  arrows = arrows.filter(a => a.x < W + 30);
+
+  bombs.forEach(b => {
+    b.x += b.vx; b.y += b.vy; b.vy += 0.35; b.timer--;
+    if(b.y > groundY - 8 || b.timer <= 0){
+      explode(b.x, Math.min(b.y, groundY-8));
+      b.dead = true;
+    }
+  });
+  bombs = bombs.filter(b => !b.dead);
+
+  explosions.forEach(ex => ex.life--);
+  explosions = explosions.filter(ex => ex.life > 0);
+
+  enemySpawnTimer--;
+  if(enemySpawnTimer <= 0){
+    spawnEnemy();
+    enemySpawnTimer = Math.max(48, 100 - score * 0.3);
+  }
+  itemSpawnTimer--;
+  if(itemSpawnTimer <= 0){
+    spawnItem();
+    itemSpawnTimer = 260 + Math.random()*220;
+  }
+
+  // enemies keep moving left forever (even squished ones stay on the ground and scroll by)
+  enemies.forEach(en => {
+    en.x -= en.speed;
+    if(!en.alive && en.squishProgress < 1) en.squishProgress = Math.min(1, en.squishProgress + 0.14);
+  });
+  enemies = enemies.filter(en => en.x > -80);
+
+  items.forEach(it => it.x -= it.speed);
+  items = items.filter(it => it.x > -60);
+
+  // arrow vs enemy
+  arrows.forEach(a => {
+    enemies.forEach(en => {
+      if(en.alive && rectsOverlap(a, en)){
+        killEnemy(en, 10);
+        a.dead = true;
+      }
+    });
+  });
+  arrows = arrows.filter(a => !a.dead);
+
+  // explosion vs enemy (bigger, stronger radius now)
+  explosions.forEach(ex => {
+    enemies.forEach(en => {
+      if(en.alive){
+        const dx = (en.x + en.w/2) - ex.x;
+        const dy = (en.y + en.h/2) - ex.y;
+        if(Math.sqrt(dx*dx + dy*dy) < ex.r) killEnemy(en, 14);
+      }
+    });
+  });
+
+  // horse vs items
+  const hRect = { x: horse.x, y: horse.y, w: horse.w, h: horse.h };
+  items.forEach(it => {
+    const cx = it.x, cy = it.y + it.size/2;
+    const dx = (horse.x + horse.w/2) - cx;
+    const dy = (horse.y + horse.h/2) - cy;
+    if(Math.sqrt(dx*dx+dy*dy) < it.size + 30){
+      collectItem(it);
+      it.dead = true;
+    }
+  });
+  items = items.filter(it => !it.dead);
+
+  // horse vs enemy
+  enemies.forEach(en => {
+    if(en.alive && rectsOverlap(hRect, en)){
+      const fallingOnTop = !horse.onGround && horse.vy > 0 && (horse.y + horse.h) < (en.y + en.h*0.55);
+      if(horse.armored){
+        killEnemy(en, 15);
+        sfx.lance();
+      } else if(fallingOnTop){
+        killEnemy(en, 15);
+        horse.vy = -9;
+        horse.onGround = false;
+        sfx.stomp();
+      } else if(horse.invuln <= 0){
+        lives--;
+        horse.invuln = 90;
+        sfx.hurt();
+        killEnemyNoScore(en);
+        updateHUD();
+        if(lives <= 0){ gameOver(); }
+      }
+    }
+  });
+
+  updateHUD();
+}
+
+function collectItem(it){
+  if(it.type === 'arrow'){ arrowCount += 3; sfx.pickup(); }
+  else if(it.type === 'bomb'){ bombCount += 1; sfx.pickup(); }
+  else if(it.type === 'armor'){ horse.armored = true; horse.armorTimer = 420; sfx.power(); }
+  updateHUD();
+}
+
+function killEnemy(en, pts){
+  en.alive = false;
+  en.squishProgress = 0;
+  score += pts;
+}
+function killEnemyNoScore(en){
+  en.alive = false;
+  en.squishProgress = 0;
+}
+
+function explode(x, y){
+  explosions.push({ x, y, r: 90, life: 20 });
+  sfx.explode();
+}
+
+function updateHUD(){
+  document.getElementById('score').textContent = 'Score: ' + score;
+  document.getElementById('arrowsCount').textContent = '🏹 x' + arrowCount;
+  document.getElementById('bombs').textContent = '💣 x' + bombCount;
+  document.getElementById('hearts').textContent = '❤️'.repeat(Math.max(lives,0));
+}
+
+// ---------- Drawing ----------
+function drawBackground(){
+  ctx.clearRect(0,0,W,H);
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0, '#8fd9ff');
+  grad.addColorStop(1, '#d7f4ff');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  for(let i=0;i<5;i++){
+    const cx = ((i*220 + bgOffset*0.4) % (W+160)) - 80;
+    drawCloud(cx, 55 + (i%3)*32);
+  }
+
+  ctx.fillStyle = '#8bc76a';
+  for(let i=0;i<6;i++){
+    const hx = ((i*180 + bgOffset*0.8) % (W+180)) - 90;
+    ctx.beginPath();
+    ctx.ellipse(hx, groundY+16, 110, 42, 0, Math.PI, 0);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = '#5b9c3f';
+  ctx.fillRect(0, groundY, W, H-groundY);
+  ctx.fillStyle = '#4a7f33';
+  for(let i=0;i<20;i++){
+    const gx = ((i*45 + bgOffset*1.6) % (W+45)) - 20;
+    ctx.fillRect(gx, groundY, 22, 8);
+  }
+  ctx.strokeStyle = '#3b6626'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(W, groundY); ctx.stroke();
+}
+function drawCloud(x,y){
+  ctx.beginPath();
+  ctx.arc(x, y, 18, 0, Math.PI*2);
+  ctx.arc(x+20, y-8, 22, 0, Math.PI*2);
+  ctx.arc(x+42, y, 18, 0, Math.PI*2);
+  ctx.fill();
+}
+
+function drawHorse(){
+  const { x, y, w, h } = horse;
+  const running_ = horse.onGround;
+  const bob = running_ ? Math.sin(frame*0.35) * 3 : 0;
+  const legPhase = running_ ? Math.sin(frame*0.55) : 0;
+  const stretch = horse.onGround ? 0 : Math.min(Math.abs(horse.vy)/15, 1);
+
+  ctx.save();
+  ctx.translate(x, y);
+  if(horse.invuln > 0 && frame % 10 < 5){ ctx.globalAlpha = 0.45; }
+
+  // shadow on ground
+  ctx.save();
+  const shadowScale = horse.onGround ? 1 : Math.max(0.4, 1 - Math.abs(horse.vy)/22);
+  ctx.globalAlpha *= 0.28;
+  ctx.fillStyle = '#1a1a1a';
+  ctx.beginPath();
+  ctx.ellipse(55, h + (groundY - (y+h)) , 46*shadowScale, 9*shadowScale, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // back legs
+  ctx.strokeStyle = '#5c3a20'; ctx.lineWidth = 9; ctx.lineCap='round';
+  ctx.beginPath();
+  if(running_){
+    ctx.moveTo(26, h-8+bob*0.2); ctx.lineTo(26+legPhase*12, h+16+bob*0.2);
+    ctx.moveTo(70, h-8+bob*0.2); ctx.lineTo(70-legPhase*12, h+16+bob*0.2);
+  } else {
+    ctx.moveTo(26, h-8); ctx.lineTo(20, h+18-stretch*6);
+    ctx.moveTo(70, h-8); ctx.lineTo(76, h+18-stretch*6);
+  }
+  ctx.stroke();
+  ctx.fillStyle = '#2b1c10';
+  if(running_){
+    ctx.beginPath(); ctx.ellipse(26+legPhase*12, h+18+bob*0.2, 6,4,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(70-legPhase*12, h+18+bob*0.2, 6,4,0,0,Math.PI*2); ctx.fill();
+  } else {
+    ctx.beginPath(); ctx.ellipse(20, h+18-stretch*6, 6,4,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(76, h+18-stretch*6, 6,4,0,0,Math.PI*2); ctx.fill();
+  }
+
+  // tail
+  ctx.fillStyle = '#3d2413';
+  ctx.beginPath();
+  ctx.ellipse(2, 26+bob*0.3, 9, 22, 0.55 + (running_? Math.sin(frame*0.3)*0.15:0), 0, Math.PI*2);
+  ctx.fill();
+
+  // body
+  const bodyGrad = ctx.createLinearGradient(0, 0, 0, h);
+  bodyGrad.addColorStop(0, '#a3703f');
+  bodyGrad.addColorStop(1, '#7a4e28');
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.ellipse(52, 32+bob*0.3, 52 - stretch*4, 27 + stretch*3, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.beginPath();
+  ctx.ellipse(52, 42+bob*0.3, 40, 12, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // saddle blanket
+  ctx.fillStyle = '#c33b3b';
+  ctx.beginPath();
+  ctx.ellipse(46, 10+bob*0.3, 26, 12, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#ffd76b';
+  ctx.fillRect(24, 6+bob*0.3, 44, 4);
+
+  // front legs
+  ctx.strokeStyle = '#5c3a20'; ctx.lineWidth = 9; ctx.lineCap='round';
+  ctx.beginPath();
+  if(running_){
+    ctx.moveTo(78, h-8+bob*0.2); ctx.lineTo(78-legPhase*12, h+16+bob*0.2);
+    ctx.moveTo(94, h-8+bob*0.2); ctx.lineTo(94+legPhase*12, h+16+bob*0.2);
+  } else {
+    ctx.moveTo(78, h-8); ctx.lineTo(72, h+18-stretch*6);
+    ctx.moveTo(94, h-8); ctx.lineTo(100, h+18-stretch*6);
+  }
+  ctx.stroke();
+  ctx.fillStyle = '#2b1c10';
+  if(running_){
+    ctx.beginPath(); ctx.ellipse(78-legPhase*12, h+18+bob*0.2, 6,4,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(94+legPhase*12, h+18+bob*0.2, 6,4,0,0,Math.PI*2); ctx.fill();
+  } else {
+    ctx.beginPath(); ctx.ellipse(72, h+18-stretch*6, 6,4,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(100, h+18-stretch*6, 6,4,0,0,Math.PI*2); ctx.fill();
+  }
+
+  // neck
+  const neckTilt = horse.onGround ? -0.35 : -0.55;
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.ellipse(95, 6+bob*0.3, 21, 27, neckTilt, 0, Math.PI*2);
+  ctx.fill();
+
+  // head
+  ctx.beginPath();
+  ctx.ellipse(118, -10+bob*0.3, 16, 12, -0.15, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#c99a6b';
+  ctx.beginPath();
+  ctx.ellipse(129, -6+bob*0.3, 7, 6, -0.1, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#402a15';
+  ctx.beginPath(); ctx.ellipse(133,-4+bob*0.3, 1.6,1.2,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.moveTo(112,-20+bob*0.3); ctx.lineTo(117,-30+bob*0.3); ctx.lineTo(120,-19+bob*0.3);
+  ctx.closePath(); ctx.fill();
+
+  // mane
+  ctx.fillStyle = '#2e1a0d';
+  for(let i=0;i<5;i++){
+    const mx = 100 - i*7;
+    const my = -14 + i*7 + bob*0.3;
+    ctx.beginPath();
+    ctx.ellipse(mx, my, 7, 11, -0.6 + (running_? Math.sin(frame*0.3+i)*0.1:0), 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // eye
+  ctx.fillStyle = '#1a1109';
+  ctx.beginPath(); ctx.arc(122,-14+bob*0.3, 2.3, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(122.8,-15+bob*0.3, 0.8, 0, Math.PI*2); ctx.fill();
+
+  // rider body
+  ctx.fillStyle = horse.armored ? '#8892a0' : '#c0392b';
+  ctx.fillRect(40, -22+bob*0.3, 15, 20);
+  ctx.fillStyle = horse.armored ? '#6b7684' : '#a93226';
+  ctx.fillRect(40, -22+bob*0.3, 15, 6);
+
+  if(horse.armored){
+    // metal shoulder pads
+    ctx.fillStyle = '#c7cfd8';
+    ctx.beginPath(); ctx.arc(41,-19+bob*0.3, 5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(54,-19+bob*0.3, 5, 0, Math.PI*2); ctx.fill();
+  }
+
+  // rider arm
+  ctx.strokeStyle = '#e8b98a'; ctx.lineWidth = 4; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(53,-14+bob*0.3); ctx.lineTo(64,-16+bob*0.3); ctx.stroke();
+
+  // head
+  ctx.fillStyle = '#f0c199';
+  ctx.beginPath(); ctx.arc(47,-29+bob*0.3, 9, 0, Math.PI*2); ctx.fill();
+
+  if(horse.armored){
+    // full metal helmet with visor
+    ctx.fillStyle = '#b9c2cc';
+    ctx.beginPath(); ctx.arc(47,-30+bob*0.3, 10.5, Math.PI*1.05, Math.PI*2.05); ctx.fill();
+    ctx.fillRect(41,-30+bob*0.3, 12, 10);
+    ctx.fillStyle = '#3a4048';
+    ctx.fillRect(42,-27+bob*0.3, 10, 2.5);
+    ctx.fillStyle = '#ffd700';
+    ctx.beginPath(); ctx.arc(47,-40.5+bob*0.3, 2.5, 0, Math.PI*2); ctx.fill();
+  } else {
+    ctx.fillStyle = '#8a5a34';
+    ctx.beginPath(); ctx.arc(47,-32+bob*0.3, 9.5, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#ffd700';
+    ctx.beginPath(); ctx.arc(47,-40+bob*0.3, 2.5, 0, Math.PI*2); ctx.fill();
+  }
+
+  if(horse.armored){
+    // LANCE — long, sturdy, held forward with a metal tip
+    const lanceLen = 78;
+    const lx1 = 60, ly1 = -14+bob*0.3;
+    const lx2 = lx1 + lanceLen, ly2 = ly1 - 6;
+    ctx.strokeStyle = '#7a5230'; ctx.lineWidth = 6; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(lx1, ly1); ctx.lineTo(lx2, ly2); ctx.stroke();
+    // red grip stripe
+    ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.moveTo(lx1+6, ly1-0.5); ctx.lineTo(lx1+16, ly1-2); ctx.stroke();
+    // metal tip
+    ctx.fillStyle = '#d8dee5';
+    ctx.beginPath();
+    ctx.moveTo(lx2, ly2);
+    ctx.lineTo(lx2+16, ly2-3);
+    ctx.lineTo(lx2+2, ly2+5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#8a939c'; ctx.lineWidth = 1;
+    ctx.stroke();
+  } else {
+    // bow
+    ctx.strokeStyle = '#4a2c0e'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.arc(66,-16+bob*0.3, 11, -1.0, 1.0); ctx.stroke();
+    ctx.strokeStyle = '#ddd'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(66,-27+bob*0.3); ctx.lineTo(66,-5+bob*0.3); ctx.stroke();
+  }
+
+  // armor body glow / plating on horse
+  if(horse.armored){
+    // barding plates on horse body
+    ctx.strokeStyle = '#c7cfd8'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(52, 32+bob*0.3, 50, 25, 0, 0.2, Math.PI-0.2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(52, 20+bob*0.3, 42, 6, 0, 0, Math.PI*2);
+    ctx.stroke();
+
+    ctx.strokeStyle = `rgba(255,215,0,${0.45 + 0.35*Math.sin(frame*0.4)})`;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(52, 32+bob*0.3, 60, 36, 0, 0, Math.PI*2);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function drawEnemy(en){
+  ctx.save();
+  ctx.translate(en.x + en.w/2, en.y + en.h/2);
+  const sq = en.alive ? 0 : en.squishProgress;
+  if(!en.alive){
+    // squashed flat permanently — no fade, just stays on the ground
+    ctx.scale(1 + sq*0.7, 1 - sq*0.82);
+    ctx.translate(0, en.h*0.5*sq*0.82);
+  }
+  const bob = en.alive ? Math.sin(frame*0.28)*3 : 0;
+
+  ctx.strokeStyle = '#2b3a67'; ctx.lineWidth = 8; ctx.lineCap='round';
+  const lp = Math.sin(frame*0.35);
+  ctx.beginPath();
+  ctx.moveTo(-12, 20+bob); ctx.lineTo(-12+lp*6, 34+bob);
+  ctx.moveTo(12, 20+bob); ctx.lineTo(12-lp*6, 34+bob);
+  ctx.stroke();
+
+  ctx.fillStyle = '#e08a3c';
+  ctx.beginPath();
+  ctx.ellipse(0, 4+bob, 30, 26, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#c9702a';
+  ctx.beginPath();
+  ctx.ellipse(0, 8+bob, 20, 16, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#e08a3c'; ctx.lineWidth = 9;
+  ctx.beginPath();
+  ctx.moveTo(-26, -2+bob); ctx.lineTo(-36, 10+bob);
+  ctx.moveTo(26, -2+bob); ctx.lineTo(36, 10+bob);
+  ctx.stroke();
+
+  ctx.fillStyle = '#f2c199';
+  ctx.beginPath(); ctx.arc(0, -20+bob, 15, 0, Math.PI*2); ctx.fill();
+
+  ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+  if(en.alive){
+    ctx.beginPath();
+    ctx.moveTo(-8,-24+bob); ctx.lineTo(-2,-21+bob);
+    ctx.moveTo(8,-24+bob); ctx.lineTo(2,-21+bob);
+    ctx.stroke();
+    ctx.beginPath(); ctx.arc(0,-13+bob,4,0,Math.PI); ctx.stroke();
+  } else {
+    // X_X dizzy squashed face
+    ctx.beginPath();
+    ctx.moveTo(-6,-24); ctx.lineTo(-2,-20); ctx.moveTo(-2,-24); ctx.lineTo(-6,-20);
+    ctx.moveTo(2,-24); ctx.lineTo(6,-20); ctx.moveTo(6,-24); ctx.lineTo(2,-20);
+    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-5,-12); ctx.lineTo(5,-12); ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#3d2413'; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-9,-15+bob); ctx.quadraticCurveTo(0,-10+bob,9,-15+bob);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawArrow(a){
+  ctx.save();
+  ctx.translate(a.x, a.y);
+  ctx.fillStyle = '#5b3a1e';
+  ctx.fillRect(0, 2, 18, 3);
+  ctx.beginPath();
+  ctx.moveTo(18, -3); ctx.lineTo(28, 3.5); ctx.lineTo(18, 10);
+  ctx.fillStyle = '#999';
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawBomb(b){
+  ctx.save();
+  ctx.translate(b.x, b.y);
+  ctx.fillStyle = '#2b2b2b';
+  ctx.beginPath(); ctx.arc(0,0,10,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#e88b1c'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(4,-9); ctx.lineTo(9,-16); ctx.stroke();
+  ctx.fillStyle = '#ffcc33';
+  ctx.beginPath(); ctx.arc(9,-16,3,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawExplosion(ex){
+  const t = 1 - ex.life/20;
+  ctx.save();
+  ctx.globalAlpha = 1 - t;
+  const grad = ctx.createRadialGradient(ex.x, ex.y, 4, ex.x, ex.y, ex.r*t + 14);
+  grad.addColorStop(0, '#fff4b0');
+  grad.addColorStop(0.5, '#ff9d3c');
+  grad.addColorStop(1, 'rgba(255,60,20,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(ex.x, ex.y, ex.r*t + 14, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawItem(it){
+  ctx.save();
+  const floatY = it.y + it.size/2 + Math.sin(frame*0.15 + it.x*0.02)*4;
+  ctx.translate(it.x, floatY);
+  if(it.type === 'armor'){
+    // upgraded shield-and-helm icon with shine
+    const grad = ctx.createLinearGradient(-16,-18,16,20);
+    grad.addColorStop(0, '#fff6cf');
+    grad.addColorStop(0.5, '#ffd700');
+    grad.addColorStop(1, '#d99a00');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(0,-19); ctx.lineTo(15,-9); ctx.lineTo(12,15); ctx.lineTo(0,21);
+    ctx.lineTo(-12,15); ctx.lineTo(-15,-9); ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#a0700a'; ctx.lineWidth = 2; ctx.stroke();
+    // cross emblem
+    ctx.fillStyle = '#c0392b';
+    ctx.fillRect(-2.5,-9,5,20);
+    ctx.fillRect(-8,-3,16,5);
+    // shine sparkle
+    ctx.fillStyle = `rgba(255,255,255,${0.5+0.4*Math.sin(frame*0.2)})`;
+    ctx.beginPath(); ctx.arc(-6,-9,2.5,0,Math.PI*2); ctx.fill();
+  } else if(it.type === 'bomb'){
+    ctx.fillStyle = '#2b2b2b';
+    ctx.beginPath(); ctx.arc(0,2,14,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#e88b1c'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(5,-10); ctx.lineTo(11,-18); ctx.stroke();
+    ctx.fillStyle = '#ffcc33';
+    ctx.beginPath(); ctx.arc(11,-18,3,0,Math.PI*2); ctx.fill();
+  } else {
+    ctx.fillStyle = '#fff3b0';
+    ctx.beginPath(); ctx.arc(0,0,17,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#c9972b'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle = '#5b3a1e';
+    ctx.fillRect(-10,-1.5,14,3);
+    ctx.beginPath();
+    ctx.moveTo(4,-6); ctx.lineTo(13,0); ctx.lineTo(4,6);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function draw(){
+  drawBackground();
+  items.forEach(drawItem);
+  enemies.forEach(drawEnemy);
+  arrows.forEach(drawArrow);
+  bombs.forEach(drawBomb);
+  explosions.forEach(drawExplosion);
+  drawHorse();
+
+  if(horse.armored){
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(W/2-80, 14, 160, 10);
+    ctx.fillStyle = '#ffd700';
+    ctx.fillRect(W/2-80, 14, 160*(horse.armorTimer/420), 10);
+  }
+}
+
+// ---------- Loop ----------
+function loop(){
+  if(running){
+    update();
+    draw();
+    requestAnimationFrame(loop);
+  }
+}
+
+function gameOver(){
+  running = false;
+  sfx.gameover();
+  const ov = document.getElementById('overlay');
+  ov.style.display = 'flex';
+  ov.innerHTML = `<h1>😵 Game Over!</h1><p>Final Score: ${score}</p><button class="mainBtn" id="restartBtn">Play Again</button>`;
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    ov.style.display = 'none';
+    startGame();
+  });
+}
+
+function startGame(){
+  score = 0;
+  lives = cfg.lives;
+  arrowCount = cfg.arrows;
+  bombCount = cfg.bombs;
+  speed = 4.6; frame = 0;
+  arrows = []; bombs = []; explosions = []; enemies = []; items = [];
+  enemySpawnTimer = 70; itemSpawnTimer = 200;
+  horse.y = groundY - horse.h; horse.vy = 0; horse.onGround = true;
+  horse.armored = false; horse.armorTimer = 0; horse.invuln = 60;
+  document.getElementById('overlay').style.display = 'none';
+  updateHUD();
+  running = true;
+  loop();
+}
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+draw();
+</script>
+</body>
+</html>
